@@ -1,5 +1,8 @@
 service: serverless-hello
 
+plugins:
+  - serverless-offline
+  
 provider:
   name: aws
   runtime: nodejs18.x

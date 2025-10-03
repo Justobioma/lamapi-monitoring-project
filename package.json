@@ -1,0 +1,29 @@
+{
+  "name": "lamapi-monitoring-project",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "serverless offline",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Justobioma/lamapi-monitoring-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Justobioma/lamapi-monitoring-project/issues"
+  },
+  "homepage": "https://github.com/Justobioma/lamapi-monitoring-project#readme",
+  "description": "",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "serverless-offline": "^14.4.0"
+  }
+}
