@@ -8,6 +8,18 @@
         "LogGroupName": "/aws/lambda/serverless-hello-dev-hello"
       }
     },
+    "StatusLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-hello-dev-status"
+      }
+    },
+    "SubmitLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-hello-dev-submit"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -91,7 +103,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-          "S3Key": "serverless/serverless-hello/dev/1759507153887-2025-10-03T15:59:13.887Z/serverless-hello.zip"
+          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
         },
         "Handler": "handler.hello",
         "Runtime": "nodejs18.x",
@@ -109,14 +121,80 @@
         "HelloLogGroup"
       ]
     },
-    "HelloLambdaVersionGeSvQejtj207ObqJ4lLCyVev0R9GLIEaebz4T6CmSU": {
+    "StatusLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
+          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
+        },
+        "Handler": "handler.status",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "serverless-hello-dev-status",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "StatusLogGroup"
+      ]
+    },
+    "SubmitLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
+          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
+        },
+        "Handler": "handler.submit",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "serverless-hello-dev-submit",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "SubmitLogGroup"
+      ]
+    },
+    "HelloLambdaVersionkAPTv9CorOLTUAiPx4DS1sfVzP5Mf8CsX7nUPnl5Xw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "1lGY3IB6/9m19YmVYqpCxdJA47xjUEdpxrq12zUaBx0="
+        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
+      }
+    },
+    "StatusLambdaVersionMyPokrQhMXR1rtDfLyi1MOI7LPuN9mYVfYBsfOgPKo": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "StatusLambdaFunction"
+        },
+        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
+      }
+    },
+    "SubmitLambdaVersiondTYyncbNVTRFJqSq3Dxv6YpPjigZ1Ckwp3Z0CMEq24": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SubmitLambdaFunction"
+        },
+        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
       }
     },
     "ApiGatewayRestApi": {
@@ -141,6 +219,36 @@
           ]
         },
         "PathPart": "hello",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceStatus": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "status",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceSubmit": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "submit",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -185,6 +293,96 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourceHello"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodStatusOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceStatus"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodSubmitOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceSubmit"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -237,7 +435,99 @@
         "HelloLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1759506900904": {
+    "ApiGatewayMethodStatusGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceStatus"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "StatusLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "StatusLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodSubmitPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceSubmit"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "SubmitLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "SubmitLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayDeployment1759931496377": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -247,7 +537,11 @@
       },
       "DependsOn": [
         "ApiGatewayMethodHelloOptions",
-        "ApiGatewayMethodHelloGet"
+        "ApiGatewayMethodStatusOptions",
+        "ApiGatewayMethodSubmitOptions",
+        "ApiGatewayMethodHelloGet",
+        "ApiGatewayMethodStatusGet",
+        "ApiGatewayMethodSubmitPost"
       ]
     },
     "HelloLambdaPermissionApiGateway": {
@@ -256,6 +550,80 @@
         "FunctionName": {
           "Fn::GetAtt": [
             "HelloLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "StatusLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "StatusLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "SubmitLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "SubmitLambdaFunction",
             "Arn"
           ]
         },
@@ -298,10 +666,28 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersionGeSvQejtj207ObqJ4lLCyVev0R9GLIEaebz4T6CmSU"
+        "Ref": "HelloLambdaVersionkAPTv9CorOLTUAiPx4DS1sfVzP5Mf8CsX7nUPnl5Xw"
       },
       "Export": {
         "Name": "sls-serverless-hello-dev-HelloLambdaFunctionQualifiedArn"
+      }
+    },
+    "StatusLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "StatusLambdaVersionMyPokrQhMXR1rtDfLyi1MOI7LPuN9mYVfYBsfOgPKo"
+      },
+      "Export": {
+        "Name": "sls-serverless-hello-dev-StatusLambdaFunctionQualifiedArn"
+      }
+    },
+    "SubmitLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "SubmitLambdaVersiondTYyncbNVTRFJqSq3Dxv6YpPjigZ1Ckwp3Z0CMEq24"
+      },
+      "Export": {
+        "Name": "sls-serverless-hello-dev-SubmitLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {

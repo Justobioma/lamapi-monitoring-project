@@ -2,7 +2,7 @@ service: serverless-hello
 
 plugins:
   - serverless-offline
-  
+
 provider:
   name: aws
   runtime: nodejs18.x
@@ -15,4 +15,19 @@ functions:
       - http:
           path: hello
           method: get
+          cors: true
+
+  status:
+    handler: handler.status
+    events:
+      - http:
+          path: status
+          method: get
+          cors: true
+  submit:
+    handler: handler.submit
+    events:
+      - http:
+          path: submit
+          method: post
           cors: true
