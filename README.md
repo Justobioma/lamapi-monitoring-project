@@ -30,3 +30,26 @@ This project uses Grafana Cloud to monitor AWS Lambda via CloudWatch.
 4. Enter Role ARN in Grafana
 5. View Lambda metrics in dashboards
 ![Screenshot_6-10-2025_145726_justobioma grafana net](https://github.com/user-attachments/assets/8c3341d2-7d59-475e-961d-5444139af75c)
+
+### POST /submit
+
+Accepts a JSON payload with `name` and `message`.
+
+**Request:**
+```json
+{
+  "name": "Obioma",
+  "message": "This is a test submission"
+}
+Response:
+{
+  "status": "Success",
+  "received": { "name": "Obioma", "message": "..." },
+  "timestamp": "..."
+}
+
+
+
+---
+
+
