@@ -34,7 +34,7 @@ This project uses Grafana Cloud to monitor AWS Lambda via CloudWatch.
 ### POST /submit
 
 ## Endpoint
-https://9rl863hqfk.execute-api.eu-west-1.amazonaws.com/dev/submit
+POST - https://9rl863hqfk.execute-api.eu-west-1.amazonaws.com/dev/submit
 
 Accepts a JSON payload with `name` and `message`.
 
