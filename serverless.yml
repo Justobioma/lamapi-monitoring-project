@@ -7,6 +7,13 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-west-1
+  provider:
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt: [SubmissionTable, Arn]
 
 functions:
   hello:
@@ -31,3 +38,25 @@ functions:
           path: submit
           method: post
           cors: true
+
+resources:
+  Resources:
+    SubmissionTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: SubmissionTable
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+package:
+  exclude:
+    - test/**
+    - .git/**
+    - .env
+    - README.md
+    - node_modules/aws-sdk/**

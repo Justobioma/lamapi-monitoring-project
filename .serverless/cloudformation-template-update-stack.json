@@ -77,6 +77,20 @@
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-hello-dev*:*:*"
                     }
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:PutItem"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmissionTable",
+                        "Arn"
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -103,7 +117,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
+          "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
         },
         "Handler": "handler.hello",
         "Runtime": "nodejs18.x",
@@ -126,7 +140,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
+          "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
         },
         "Handler": "handler.status",
         "Runtime": "nodejs18.x",
@@ -149,7 +163,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-          "S3Key": "serverless/serverless-hello/dev/1759931516057-2025-10-08T13:51:56.057Z/serverless-hello.zip"
+          "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
         },
         "Handler": "handler.submit",
         "Runtime": "nodejs18.x",
@@ -167,34 +181,34 @@
         "SubmitLogGroup"
       ]
     },
-    "HelloLambdaVersionkAPTv9CorOLTUAiPx4DS1sfVzP5Mf8CsX7nUPnl5Xw": {
+    "HelloLambdaVersioniTQPgA6og0MEqtRdrCusdMI81Ef0Y5art8vWH1jKyJ0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
+        "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
       }
     },
-    "StatusLambdaVersionMyPokrQhMXR1rtDfLyi1MOI7LPuN9mYVfYBsfOgPKo": {
+    "StatusLambdaVersionU608dAEXBC9dP3laBxTrMtkLX6CqP1vE0fyJZJwfA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StatusLambdaFunction"
         },
-        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
+        "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
       }
     },
-    "SubmitLambdaVersiondTYyncbNVTRFJqSq3Dxv6YpPjigZ1Ckwp3Z0CMEq24": {
+    "SubmitLambdaVersionf26KEdjMm9NCZbiYRmbG50gYbV103cqiY8eDoS6fVDk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SubmitLambdaFunction"
         },
-        "CodeSha256": "7tLZfrrZdYT1ifMnzzFw+8ijr77J8y4d4BcMhL4j9z4="
+        "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
       }
     },
     "ApiGatewayRestApi": {
@@ -527,7 +541,7 @@
         "SubmitLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1759931496377": {
+    "ApiGatewayDeployment1760015418565": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -654,6 +668,25 @@
           ]
         }
       }
+    },
+    "SubmissionTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "SubmissionTable",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST"
+      }
     }
   },
   "Outputs": {
@@ -666,7 +699,7 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersionkAPTv9CorOLTUAiPx4DS1sfVzP5Mf8CsX7nUPnl5Xw"
+        "Ref": "HelloLambdaVersioniTQPgA6og0MEqtRdrCusdMI81Ef0Y5art8vWH1jKyJ0"
       },
       "Export": {
         "Name": "sls-serverless-hello-dev-HelloLambdaFunctionQualifiedArn"
@@ -675,7 +708,7 @@
     "StatusLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StatusLambdaVersionMyPokrQhMXR1rtDfLyi1MOI7LPuN9mYVfYBsfOgPKo"
+        "Ref": "StatusLambdaVersionU608dAEXBC9dP3laBxTrMtkLX6CqP1vE0fyJZJwfA"
       },
       "Export": {
         "Name": "sls-serverless-hello-dev-StatusLambdaFunctionQualifiedArn"
@@ -684,7 +717,7 @@
     "SubmitLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SubmitLambdaVersiondTYyncbNVTRFJqSq3Dxv6YpPjigZ1Ckwp3Z0CMEq24"
+        "Ref": "SubmitLambdaVersionf26KEdjMm9NCZbiYRmbG50gYbV103cqiY8eDoS6fVDk"
       },
       "Export": {
         "Name": "sls-serverless-hello-dev-SubmitLambdaFunctionQualifiedArn"
