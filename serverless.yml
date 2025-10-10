@@ -7,7 +7,13 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-west-1
-  provider:
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource: arn:aws:dynamodb:eu-west-1:070853583236:table/SubmissionTable
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -31,6 +37,7 @@ functions:
           path: status
           method: get
           cors: true
+    
   submit:
     handler: handler.submit
     events:
@@ -38,6 +45,15 @@ functions:
           path: submit
           method: post
           cors: true
+
+  list:
+    handler: handler.list
+    events:
+      - http:
+          path: list
+          method: get
+          cors: true
+
 
 resources:
   Resources:

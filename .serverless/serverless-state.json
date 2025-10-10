@@ -8,6 +8,19 @@
       "name": "aws",
       "runtime": "nodejs18.x",
       "region": "eu-west-1",
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Scan"
+              ],
+              "Resource": "arn:aws:dynamodb:eu-west-1:070853583236:table/SubmissionTable"
+            }
+          ]
+        }
+      },
       "iamRoleStatements": [
         {
           "Effect": "Allow",
@@ -26,7 +39,6 @@
       ],
       "stage": "dev",
       "versionFunctions": true,
-      "provider": null,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
         "Description": "The AWS CloudFormation template for this Serverless application",
@@ -47,6 +59,12 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/serverless-hello-dev-submit"
+            }
+          },
+          "ListLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/serverless-hello-dev-list"
             }
           },
           "IamRoleLambdaExecution": {
@@ -108,7 +126,7 @@
                         ]
                       },
                       {
-                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
                       }
                     ]
                   }
@@ -135,7 +153,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-                "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
+                "S3Key": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z/serverless-hello.zip"
               },
               "Handler": "handler.hello",
               "Runtime": "nodejs18.x",
@@ -158,7 +176,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-                "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
+                "S3Key": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z/serverless-hello.zip"
               },
               "Handler": "handler.status",
               "Runtime": "nodejs18.x",
@@ -181,7 +199,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
-                "S3Key": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z/serverless-hello.zip"
+                "S3Key": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z/serverless-hello.zip"
               },
               "Handler": "handler.submit",
               "Runtime": "nodejs18.x",
@@ -199,34 +217,67 @@
               "SubmitLogGroup"
             ]
           },
-          "HelloLambdaVersioniTQPgA6og0MEqtRdrCusdMI81Ef0Y5art8vWH1jKyJ0": {
+          "ListLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
+                "S3Key": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z/serverless-hello.zip"
+              },
+              "Handler": "handler.list",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "serverless-hello-dev-list",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ListLogGroup"
+            ]
+          },
+          "HelloLambdaVersionkskfGFH011ELtLupyzOwIwWyOE82deVAwCGD9kAO6gw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
+              "CodeSha256": "JVPvFWhlIyLDsPFIm7+ZL8cw42xntnSTGg95bbwBp8w="
             }
           },
-          "StatusLambdaVersionU608dAEXBC9dP3laBxTrMtkLX6CqP1vE0fyJZJwfA": {
+          "StatusLambdaVersionMWIqm1GYOv92Df0WmRuQcXVks8rzU6idJcyGxS9ceys": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "StatusLambdaFunction"
               },
-              "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
+              "CodeSha256": "JVPvFWhlIyLDsPFIm7+ZL8cw42xntnSTGg95bbwBp8w="
             }
           },
-          "SubmitLambdaVersionf26KEdjMm9NCZbiYRmbG50gYbV103cqiY8eDoS6fVDk": {
+          "SubmitLambdaVersiontf4L4622RkAMmXC3LYza4Jb6TdXXC8pzIiHWdqfDU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "SubmitLambdaFunction"
               },
-              "CodeSha256": "0Q6N0ORnnl9VobuURYFoFgMWNLbOqN8ZNGehbOfmOQE="
+              "CodeSha256": "JVPvFWhlIyLDsPFIm7+ZL8cw42xntnSTGg95bbwBp8w="
+            }
+          },
+          "ListLambdaVersionBOUBHtqDiLbQKuMt2fZW5qcUeBiiEmktSMMF3exmxo": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ListLambdaFunction"
+              },
+              "CodeSha256": "JVPvFWhlIyLDsPFIm7+ZL8cw42xntnSTGg95bbwBp8w="
             }
           },
           "ApiGatewayRestApi": {
@@ -281,6 +332,21 @@
                 ]
               },
               "PathPart": "submit",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceList": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "list",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -415,6 +481,51 @@
               },
               "ResourceId": {
                 "Ref": "ApiGatewayResourceSubmit"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodListOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceList"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -559,7 +670,53 @@
               "SubmitLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1760015418565": {
+          "ApiGatewayMethodListGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceList"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ListLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ListLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1760087469599": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -571,9 +728,11 @@
               "ApiGatewayMethodHelloOptions",
               "ApiGatewayMethodStatusOptions",
               "ApiGatewayMethodSubmitOptions",
+              "ApiGatewayMethodListOptions",
               "ApiGatewayMethodHelloGet",
               "ApiGatewayMethodStatusGet",
-              "ApiGatewayMethodSubmitPost"
+              "ApiGatewayMethodSubmitPost",
+              "ApiGatewayMethodListGet"
             ]
           },
           "HelloLambdaPermissionApiGateway": {
@@ -687,6 +846,43 @@
               }
             }
           },
+          "ListLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ListLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "SubmissionTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
@@ -717,7 +913,7 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersioniTQPgA6og0MEqtRdrCusdMI81Ef0Y5art8vWH1jKyJ0"
+              "Ref": "HelloLambdaVersionkskfGFH011ELtLupyzOwIwWyOE82deVAwCGD9kAO6gw"
             },
             "Export": {
               "Name": "sls-serverless-hello-dev-HelloLambdaFunctionQualifiedArn"
@@ -726,7 +922,7 @@
           "StatusLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "StatusLambdaVersionU608dAEXBC9dP3laBxTrMtkLX6CqP1vE0fyJZJwfA"
+              "Ref": "StatusLambdaVersionMWIqm1GYOv92Df0WmRuQcXVks8rzU6idJcyGxS9ceys"
             },
             "Export": {
               "Name": "sls-serverless-hello-dev-StatusLambdaFunctionQualifiedArn"
@@ -735,10 +931,19 @@
           "SubmitLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SubmitLambdaVersionf26KEdjMm9NCZbiYRmbG50gYbV103cqiY8eDoS6fVDk"
+              "Ref": "SubmitLambdaVersiontf4L4622RkAMmXC3LYza4Jb6TdXXC8pzIiHWdqfDU"
             },
             "Export": {
               "Name": "sls-serverless-hello-dev-SubmitLambdaFunctionQualifiedArn"
+            }
+          },
+          "ListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ListLambdaVersionBOUBHtqDiLbQKuMt2fZW5qcUeBiiEmktSMMF3exmxo"
+            },
+            "Export": {
+              "Name": "sls-serverless-hello-dev-ListLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -810,7 +1015,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersioniTQPgA6og0MEqtRdrCusdMI81Ef0Y5art8vWH1jKyJ0"
+        "versionLogicalId": "HelloLambdaVersionkskfGFH011ELtLupyzOwIwWyOE82deVAwCGD9kAO6gw"
       },
       "status": {
         "handler": "handler.status",
@@ -846,7 +1051,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "StatusLambdaVersionU608dAEXBC9dP3laBxTrMtkLX6CqP1vE0fyJZJwfA"
+        "versionLogicalId": "StatusLambdaVersionMWIqm1GYOv92Df0WmRuQcXVks8rzU6idJcyGxS9ceys"
       },
       "submit": {
         "handler": "handler.submit",
@@ -882,7 +1087,43 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "SubmitLambdaVersionf26KEdjMm9NCZbiYRmbG50gYbV103cqiY8eDoS6fVDk"
+        "versionLogicalId": "SubmitLambdaVersiontf4L4622RkAMmXC3LYza4Jb6TdXXC8pzIiHWdqfDU"
+      },
+      "list": {
+        "handler": "handler.list",
+        "events": [
+          {
+            "http": {
+              "path": "list",
+              "method": "get",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "serverless-hello-dev-list",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "ListLambdaVersionBOUBHtqDiLbQKuMt2fZW5qcUeBiiEmktSMMF3exmxo"
       }
     },
     "resources": {
@@ -936,7 +1177,7 @@
         "artifactsS3KeyDirname": "serverless/serverless-hello/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-eu-west-1-24c0f434-110b",
         "artifact": "C:\\Users\\HP\\Desktop\\UPSKILLING 2025\\SERVERLESS\\lamapi-monitoring-project\\.serverless\\serverless-hello.zip",
-        "artifactDirectoryName": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z"
+        "artifactDirectoryName": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z"
       }
     },
     "appId": null,
@@ -945,7 +1186,7 @@
     "artifact": "C:\\Users\\HP\\Desktop\\UPSKILLING 2025\\SERVERLESS\\lamapi-monitoring-project\\.serverless\\serverless-hello.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-hello/dev/1760015434276-2025-10-09T13:10:34.276Z",
+    "artifactDirectoryName": "serverless/serverless-hello/dev/1760087485915-2025-10-10T09:11:25.915Z",
     "artifact": "serverless-hello.zip"
   }
 }
